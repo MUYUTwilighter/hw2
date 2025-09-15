@@ -10,7 +10,7 @@ async function handleFile<T>(handler: (records: LotteryRecord[], file: string) =
   await fs.access(file).catch(async () => {
     await fs.writeFile(file, "[]");
   });
-  return fs.readFile(file).then(async data => {
+  return fs.readFile(file).then(data => {
     return JSON.parse(data.toString());
   }).catch(e => {
     console.error(`Broken JSON file "${file}", rebuilding...`);
@@ -50,5 +50,17 @@ export async function generate(): Promise<LotteryRecord> {
 
 export async function list(): Promise<LotteryRecord[]> {
   return await handleFile(records => records.filter(record => !record.is_deleted));
+}
+
+export async function remove(date_generated: number): Promise<void> {
+  await handleFile((records, file) => {
+    const index = records.findIndex(record => record.date_generated === date_generated);
+    if (index !== -1) {
+      records[index].is_deleted = true;
+      fs.writeFile(file, JSON.stringify(records, null, 2)).catch(e => {
+        console.error(`Error writing to file ${file}: ${e}`);
+      });
+    }
+  });
 }
 

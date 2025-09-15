@@ -1,5 +1,5 @@
 import {expect, test} from "vitest";
-import {generate, list} from "@/lib/powerball";
+import {generate, list, remove} from "@/lib/powerball";
 import {LotteryRecord} from "@/lib/types";
 import * as fs from "node:fs/promises";
 
@@ -48,6 +48,17 @@ test("if the date_generated is a valid timestamp", async () => {
   await generate().then(record => {
     expect(record.date_generated).toBeLessThanOrEqual(Date.now());
     expect(record.date_generated).toBeGreaterThan(Date.now() - 1000 * 60); // within the last minute
+  });
+});
+
+test("if removal works", async () => {
+  await generate().then(record => {
+    remove(record.date_generated).then(() => {
+      list().then(records => {
+        const found = records.find(r => r.date_generated === record.date_generated);
+        expect(found).toBeUndefined();
+      });
+    });
   });
 });
 
