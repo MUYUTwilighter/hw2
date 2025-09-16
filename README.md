@@ -8,3 +8,5 @@ A web application to simulate Powerball lottery numbers.
 - Run Jest tests: `npm test`
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+Change the server-side storage by adding environment variables `LOTTERY_DATA`.
