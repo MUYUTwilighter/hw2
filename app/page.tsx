@@ -129,7 +129,6 @@ export default function Home() {
                     </Typography>
                   </MenuItem>
                 )}
-
                 {records.map((r) => (
                   <MenuItem
                     key={r.date_generated}
@@ -147,6 +146,12 @@ export default function Home() {
                       action={() => {
                         remove(r.date_generated).then(() => {
                           list().then(setRecords);
+                          if (selected?.date_generated === r.date_generated) {
+                            setSelected(null);
+                          }
+                          if (generated?.date_generated === r.date_generated) {
+                            setGenerated(null);
+                          }
                         });
                       }}
                       onClick={(e) => e.stopPropagation()}

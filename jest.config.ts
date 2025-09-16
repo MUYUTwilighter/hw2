@@ -4,7 +4,9 @@
  */
 
 import type {Config} from 'jest';
-import nextJest from 'next/jest.js'
+import {pathsToModuleNameMapper} from 'ts-jest';
+import {compilerOptions} from './tsconfig.json';
+import nextJest from 'next/jest.js';
 
 const createJestConfig = nextJest({
   // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
@@ -98,7 +100,15 @@ const config: Config = {
   // ],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
-  // moduleNameMapper: {},
+  moduleNameMapper: {
+    // 用 tsconfig 的 paths 自动映射到 Jest
+    ...(compilerOptions.paths
+      ? pathsToModuleNameMapper(compilerOptions.paths, {prefix: '<rootDir>/'})
+      : {}),
+
+    // 可选：静态资源/样式的占位 mock（按需开启）
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy'
+  },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
