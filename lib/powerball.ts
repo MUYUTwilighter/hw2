@@ -4,7 +4,7 @@ import {LotteryRecord} from "@/lib/types";
 import * as fs from "node:fs/promises";
 
 async function handleFile<T>(handler: (records: LotteryRecord[], file: string) => T): Promise<T> {
-  const dir = process.env.LOTTERY_DATA || "./data";
+  const dir = process.env.LOTTERY_DATA || "data";
   const file = `${dir}/records.json`;
   await fs.mkdir(dir, {recursive: true});
   await fs.access(file).catch(async () => {
