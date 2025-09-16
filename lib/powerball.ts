@@ -25,7 +25,9 @@ async function append(record: LotteryRecord) {
     fs.writeFile(file, JSON.stringify(records, null, 2)).catch(e => {
       console.error(`Error writing to file ${file}: ${e}`);
     });
-  })
+  }).catch(e => {
+    console.error(`Error handling file: ${e}`);
+  });
 }
 
 export async function generate(): Promise<LotteryRecord> {
@@ -49,7 +51,9 @@ export async function generate(): Promise<LotteryRecord> {
 }
 
 export async function list(): Promise<LotteryRecord[]> {
-  return await handleFile(records => records.filter(record => !record.is_deleted));
+  return await handleFile(records => records.filter(record => !record.is_deleted)).catch(e => {
+    console.error(`Error handling file: ${e}`);
+  }).then(records => records || []);
 }
 
 export async function remove(date_generated: number): Promise<void> {
@@ -61,6 +65,8 @@ export async function remove(date_generated: number): Promise<void> {
         console.error(`Error writing to file ${file}: ${e}`);
       });
     }
+  }).catch(e => {
+    console.error(`Error handling file: ${e}`);
   });
 }
 
